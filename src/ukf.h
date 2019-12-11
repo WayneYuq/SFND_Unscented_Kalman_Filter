@@ -44,8 +44,8 @@ class UKF {
    */
   void UpdateRadar(MeasurementPackage meas_package);
   
-  void AugmentedSigmaPoints(MatrixXd& Xsig_aug);
-  void SigmaPointPrediction(const MatrixXd& Xsig_aug, float delta_t);
+  void AugmentedSigmaPoints();
+  void SigmaPointPrediction(double delta_t);
   void PredictMeanAndCovariance();
   void PredictRadarMeasurement(VectorXd& z_pred, MatrixXd& S, MatrixXd& Zsig);
   void UpdateRadarState(MeasurementPackage meas_package, const VectorXd& z_pred, const MatrixXd& S, const MatrixXd& Zsig);
@@ -72,6 +72,7 @@ class UKF {
   Eigen::MatrixXd H_;
   // lidar measurement noise covariance matrix
   Eigen::MatrixXd R_LIDAR_;
+  Eigen::MatrixXd Xsig_aug_;
 
   // time when the state is true, in us
   long long time_us_;
