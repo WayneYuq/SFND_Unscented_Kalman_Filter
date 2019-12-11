@@ -4,6 +4,9 @@
 #include "Eigen/Dense"
 #include "measurement_package.h"
 
+using Eigen::MatrixXd;
+using Eigen::VectorXd;
+
 class UKF {
  public:
   /**
@@ -43,11 +46,9 @@ class UKF {
   
   void AugmentedSigmaPoints(MatrixXd& Xsig_aug);
   void SigmaPointPrediction(const MatrixXd& Xsig_aug, float delta_t);
-  void PredictMeanAndCovariance(VectorXd* x_pred, 
-                                MatrixXd* P_pred);
-  void PredictRadarMeasurement(VectorXd* z_out, 
-                               MatrixXd* S_out);
-
+  void PredictMeanAndCovariance();
+  void PredictRadarMeasurement(VectorXd& z_pred, MatrixXd& S, MatrixXd& Zsig);
+  void UpdateRadarState(MeasurementPackage meas_package, const VectorXd& z_pred, const MatrixXd& S, const MatrixXd& Zsig);
 
   // initially set to false, set to true in first call of ProcessMeasurement
   bool is_initialized_;
@@ -104,6 +105,9 @@ class UKF {
 
   // Augmented state dimension
   int n_aug_;
+
+  // radar measurement dimension, measure r, phi, and r_dot
+  int n_z_;
 
   // Sigma point spreading parameter
   double lambda_;
