@@ -66,6 +66,11 @@ class UKF {
 
   // predicted sigma points matrix
   Eigen::MatrixXd Xsig_pred_;
+  
+  // lidar measurement matrix
+  Eigen::MatrixXd H_;
+  // lidar measurement noise covariance matrix
+  Eigen::MatrixXd R_LIDAR_;
 
   // time when the state is true, in us
   long long time_us_;
