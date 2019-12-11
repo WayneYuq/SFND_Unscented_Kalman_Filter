@@ -40,6 +40,13 @@ class UKF {
    * @param meas_package The measurement at k+1
    */
   void UpdateRadar(MeasurementPackage meas_package);
+  
+  void AugmentedSigmaPoints(MatrixXd& Xsig_aug);
+  void SigmaPointPrediction(const MatrixXd& Xsig_aug, float delta_t);
+  void PredictMeanAndCovariance(VectorXd* x_pred, 
+                                MatrixXd* P_pred);
+  void PredictRadarMeasurement(VectorXd* z_out, 
+                               MatrixXd* S_out);
 
 
   // initially set to false, set to true in first call of ProcessMeasurement
