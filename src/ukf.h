@@ -72,6 +72,7 @@ class UKF {
   Eigen::MatrixXd H_;
   // lidar measurement noise covariance matrix
   Eigen::MatrixXd R_LIDAR_;
+  Eigen::MatrixXd R_RADAR_;
   Eigen::MatrixXd Xsig_aug_;
 
   // time when the state is true, in us
@@ -112,6 +113,9 @@ class UKF {
 
   // Sigma point spreading parameter
   double lambda_;
+
+  // Normalization innovation square, 7.8 is optimal for radar
+  double nis_;
 };
 
 #endif  // UKF_H
