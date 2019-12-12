@@ -114,7 +114,7 @@ class UKF {
   // Sigma point spreading parameter
   double lambda_;
 
-  // Normalization innovation square, 7.8 is optimal for radar
+  // Normalization innovation square, 7.8 is optimal for radar, 5.991 for lidar
   double nis_;
 };
 

@@ -18,10 +18,10 @@ UKF::UKF() {
   use_radar_ = true;
 
   // Process noise standard deviation longitudinal acceleration in m/s^2
-  std_a_ = 1; // assume max acceleration is 2 m/s^2
+  std_a_ = 2; // assume max acceleration is 2 m/s^2
 
   // Process noise standard deviation yaw acceleration in rad/s^2
-  std_yawdd_ = 0.1;
+  std_yawdd_ = M_PI / 4;
 
   /**
    * DO NOT MODIFY measurement noise values below.
@@ -72,7 +72,7 @@ UKF::UKF() {
   R_LIDAR_ = MatrixXd(2, 2);
   R_LIDAR_ << std_laspx_*std_laspx_, 0,
               0, std_laspy_*std_laspy_;
-  MatrixXd R_RADAR_ = MatrixXd(n_z_,n_z_);
+  R_RADAR_ = MatrixXd(n_z_,n_z_);
   R_RADAR_ <<  std_radr_*std_radr_, 0, 0,
                0, std_radphi_*std_radphi_, 0,
                0, 0,std_radrd_*std_radrd_;
@@ -134,23 +134,12 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
 }
 
 void UKF::Prediction(double delta_t) {
-  /**
-   * TODO: Complete this function! Estimate the object's location.
-   * Modify the state vector, x_. Predict sigma points, the state,
-   * and the state covariance matrix.
-   */
   AugmentedSigmaPoints();
   SigmaPointPrediction(delta_t);
   PredictMeanAndCovariance();
 }
 
 void UKF::UpdateLidar(MeasurementPackage meas_package) {
-  /**
-   * TODO: Complete this function! Use lidar data to update the belief
-   * about the object's position. Modify the state vector, x_, and
-   * covariance, P_.
-   * You can also calculate the lidar NIS, if desired.
-   */
   VectorXd z = meas_package.raw_measurements_;
   VectorXd z_pred = H_ * x_;
   VectorXd y = z - z_pred;
@@ -161,7 +150,7 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
   MatrixXd K = PHt * Si;
 
   nis_ = y.transpose() * Si * y;
-  cout << "NIS: " << nis_ << endl;
+  cout << "Lidar NIS: " << nis_ << endl; //  5.991 for lidar
 
   //new estimate
   x_ = x_ + (K * y);
@@ -171,12 +160,6 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
 }
 
 void UKF::UpdateRadar(MeasurementPackage meas_package) {
-  /**
-   * TODO: Complete this function! Use radar data to update the belief
-   * about the object's position. Modify the state vector, x_, and
-   * covariance, P_.
-   * You can also calculate the radar NIS, if desired.
-   */
   // mean predicted measurement
   VectorXd z_pred = VectorXd(n_z_);
   // measurement covariance matrix S
@@ -259,7 +242,7 @@ void UKF::UpdateRadarState(MeasurementPackage meas_package, const VectorXd& z_pr
   VectorXd z_diff = meas_package.raw_measurements_ - z_pred;
 
   nis_ = z_diff.transpose() * S.inverse() * z_diff;
-  cout << "NIS: " << nis_ << endl;
+  cout << "Radar NIS: " << nis_ << endl; // 7.8 is optimal for radar
 
   // angle normalization
   while (z_diff(1)> M_PI) z_diff(1)-=2.*M_PI;
