@@ -107,11 +107,7 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
             0.0,
             0.0,
             0.0;
-      P_ << 1.0, 0.0, 0.0, 0.0, 0.0,
-            0.0, 1.0, 0.0, 0.0, 0.0,
-            0.0, 0.0, 1.0, 0.0, 0.0,
-            0.0, 0.0, 0.0, 1.0, 0.0,
-            0.0, 0.0, 0.0, 0.0, 1.0;
+      P_ = MatrixXd::Identity(n_x_, n_x_);
     }
 
     time_us_ = meas_package.timestamp_;
